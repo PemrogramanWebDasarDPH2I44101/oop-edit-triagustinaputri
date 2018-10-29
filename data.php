@@ -1,30 +1,67 @@
-<table border=1>
-    <thead>
-        <th>Nama</th>
-        <th>Nim</th>
-        <th>Tanggal Lahir</th>
-        <th>Aksi</th>
-    </thead>
-    <tbody>
 <?php
-if (mysqli_num_rows($result) > 0) {
-    while($row = mysqli_fetch_assoc($result)) {
-        $nim = $row['nim'];
-        echo "<tr>";
-        echo "<td>" . $row["nama"]. "</td>"; 
-        echo "<td>" . $row["nim"]. "</td>";
-        echo "<td>" . $row["tgl_lahir"]. "</td>";
-        echo "<td>
-            <a href='form_edit.php?nim=$nim'>Edit</a> | 
-            <a href='delete.php?nim=$nim'>Hapus</a> | 
-            
-            </td>";
-        echo "</tr>";
+    class Data {
+        private $connect;
+
+        public function Data() {
+            $servername = "localhost";
+            $username   = "root";
+            $password   = "";
+            $db   = "tugas";
+
+            $this->connect = mysqli_connect ($servername, $username, $password, $db);
+        }
+
+        public function tambah() {
+            ;
+            $nama   = $_POST['nama'];
+            $nim    = $_POST['nim']
+            $tgl_lahir   = $_POST['tgl_lahir'];
+            $db = "INSERT INTO siswa (nama, nim, tgl_lahir) VALUES ('$nama', '$nim', '$tgl_lahir')";
+            if (mysqli_query($this->connect, $db)) {
+                <?php
+            }
+        }
+
+        public function tampil() {
+            $db = "SELECT * FROM siswa";
+            return mysqli_query ($this->connect , $db);
+        }
+
+        public function lihat_data($nim) {
+            $db = "SELECT * FROM siswa WHERE nim = '$nim'";
+            return mysqli_query($this->connect, $db);
+        }
+
+        public function edit() {
+            $nama   = $_POST['nama'];
+            $nim    = $_POST['nim'];
+            $tgl_lahir   = $_POST['tgl_lahir'];
+            $db = "UPDATE siswa SET nama = '$nama', tgl_lahir = '$tgl_lahir', WHERE nim = '$nim'";
+            if (mysqli_query($this->connect, $db)) {
+                <?php
+            }
+        }
+
+        public function hapus($nim) {
+            $db = "DELETE FROM siswa WHERE nim = '$nim'";
+            if (mysqli_query($this->connect, $db)) {
+                <?php
+            }
+        } 
     }
-} else {
-    echo "0 results";
-}
-mysqli_close($conn);
-?> 
-    </tbody>
-</table>
+
+    $data = new Data();
+    if (isset($_GET['tambah'])) {    
+        $data -> tambah();
+    }
+
+    if (isset($_GET['edit'])) {
+        $data -> edit();
+    }
+
+    if (isset($_GET['hapus'])) {
+        $data -> hapus($_GET['hapus']);
+    }
+
+  
+?>
